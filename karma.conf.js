@@ -9,8 +9,22 @@ module.exports = function (config) {
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma'),
-      require('karma-junit-reporter') // Add this for JUnit reports
+      require('karma-junit-reporter'), // Add this for JUnit reports
+      //new plugin
+      require('karma-puppeteer-launcher') // for headless browsers without installing browsers
     ],
+    customLaunchers: {
+      ChromiumHeadlessCI: {
+        base: 'PuppeteerTouchlessChrome', // Use Puppeteer for headless testing
+        flags: [
+          '--no-sandbox', //Critical for CI environments where chrome might run as root
+          '--headless', //explicitly run in headless mode
+          '--disable-gpu', //recommended for headless environments
+          '--disable-dev-shm-usage', // Helps prevent OOM (Out Of Memmory) issues in CI environments
+          '--remote-debugging-port=9222', // Enable remote debugging
+        ]
+      }
+    },
     client: {
       jasmine: {
         // you can add configuration options for Jasmine here
@@ -51,16 +65,12 @@ module.exports = function (config) {
         classNameFormatter: undefined, // Function (browser, result) to customize the classname attribute in xml testcase element
         properties: {} // Key value pair of properties to add to the <properties> section of the report
     },
-
-
-
-
     reporters: ['progress', 'kjhtml', 'coverage', 'junit'], // Add 'coverage' and 'junit'
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['ChromiumHeadlessCI'], // Use the custom launcher for headless testing
     singleRun: false,
     restartOnFileChange: true
   });

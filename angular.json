@@ -92,7 +92,7 @@
               "coverage",
               "junit"
             ],
-            "browsers": "ChromeHeadless",
+            "browsers": "ChromiumHeadlessCI",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
